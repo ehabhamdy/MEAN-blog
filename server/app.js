@@ -1,14 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
 const app = express();
 
 const Post = require("./models/post");
 
-const mongoServerCloud =
-  "mongodb+srv://ehab:ehabmongo@cluster0.abu2j.mongodb.net/mongo?retryWrites=true&w=majority";
 const mongoServerLocal = "mongodb://system:mongo@127.0.0.1:27017/mongo";
+// OR use process.env.DB_CLOUD for the cloud mongo instance
 mongoose
   .connect(mongoServerLocal, {
     useNewUrlParser: true,
@@ -61,9 +59,7 @@ app.get("/api/posts", (req, res, next) => {
 });
 
 app.use("/api/posts/:id", (req, res, err) => {
-  console.log("xxxxxxxxxxxxxxx", req.params.id);
   Post.deleteOne({_id: req.params.id}).then(result => {
-    console.log(result);
     res.status(200).json({ message: "Post deleted!" });
   })
 });

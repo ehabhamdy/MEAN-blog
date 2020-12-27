@@ -1,7 +1,7 @@
+require('dotenv').config();
 const http = require("http");
 const debug = require("debug")("node-angular");
 const app = require('./app')
-require('dotenv').config();
 
 const normalizePort = val => {
   var port = parseInt(val, 10);

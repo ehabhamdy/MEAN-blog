@@ -24,9 +24,6 @@ export class PostCreateComponent {
     const title = form.value.title;
     const content = form.value.content;
 
-    console.log("sdfsds", title)
-
-
     this.postsService.addPost(title, content)
 
     form.resetForm()
