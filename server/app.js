@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 const postsRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 
 const mongoServerLocal = "mongodb://system:mongo@127.0.0.1:27017/mongo";
 // OR use process.env.DB_CLOUD for the cloud mongo instance
@@ -39,5 +40,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join("images")));
 
 app.use("/api/posts", postsRoutes);
+app.use("/api/user", userRoutes);
 
 module.exports = app;
