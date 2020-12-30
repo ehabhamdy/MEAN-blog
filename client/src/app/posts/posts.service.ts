@@ -27,6 +27,7 @@ export class PostsService {
                 content: post.content,
                 id: post._id,
                 imagePath: post.imagePath,
+                creator: post.creator
               };
             }),
             maxPosts: postData.maxPosts,
@@ -53,6 +54,7 @@ export class PostsService {
       title: string;
       content: string;
       imagePath: string;
+      creator: string
     }>('http://localhost:9000/api/posts/' + id);
   }
 
@@ -63,7 +65,6 @@ export class PostsService {
     postData.append('image', image, title);
 
     //    const post: Post = {id: null, title: title, content: content}
-    console.log(postData);
     this.http
       .post<{ message: string; post: Post }>(
         'http://localhost:9000/api/posts',
@@ -101,6 +102,7 @@ export class PostsService {
         title: title,
         content: content,
         imagePath: image,
+        creator: null
       };
     }
     this.http
