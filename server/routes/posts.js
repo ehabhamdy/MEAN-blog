@@ -1,6 +1,8 @@
 const express = require("express");
 const multer = require("multer");
 const checkAuth = require("../middleware/check-auth");
+const sharp = require('sharp')
+const fs = require('fs')
 
 const Post = require("../models/post");
 
@@ -13,7 +15,7 @@ const MIME_TYPE_MAP = {
 };
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("Invliad mime type");
     if (isValid) {
@@ -21,23 +23,41 @@ const storage = multer.diskStorage({
     }
     cb(error, "images");
   },
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     const name = file.originalname.toLowerCase().split(" ").join("-");
     const ext = MIME_TYPE_MAP[file.mimetype];
     cb(null, name + "-" + Date.now() + "." + ext);
   },
 });
 
+// const storage = multer.memoryStorage();
+
 router.post(
   "",
   checkAuth,
   multer({ storage: storage }).single("image"),
-  (req, res, next) => {
+  async (req, res, next) => {
+    try {
+      // resize the uploaded image and save it
+      await sharp(req.file.path)// req.file.buffer)
+      .resize(500)
+      .toFile(
+          "./images/resized/" + req.file.filename
+          // "./images/" + req.file.originalname + ".png"
+      )
+
+      // remove original file image
+      fs.unlinkSync(req.file.path)
+    
+    }catch(err) {
+      console.log(err);
+    }
+  
     const url = req.protocol + "://" + req.get("host");
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + "/images/" + req.file.filename,
+      imagePath: url + "/images/resized/" + req.file.filename,
       creator: req.userData.userId,
     });
     post.save().then((createdPost) => {
